@@ -105,9 +105,16 @@ class TSNE(object):
 
         # Build the hooks for the BH T-SNE library
         self._path = pkg_resources.resource_filename('tsnecuda','') # Load from current location
-        # self._faiss_lib = N.ctypeslib.load_library('libfaiss', self._path) # Load the ctypes library
-        # self._gpufaiss_lib = N.ctypeslib.load_library('libgpufaiss', self._path) # Load the ctypes library
-        self._lib = N.ctypeslib.load_library('libtsnecuda', self._path) # Load the ctypes library
+        try:
+            # self._faiss_lib = N.ctypeslib.load_library('libfaiss', self._path) # Load the ctypes library
+            # self._gpufaiss_lib = N.ctypeslib.load_library('libgpufaiss', self._path) # Load the ctypes library
+            self._lib = N.ctypeslib.load_library('libtsnecuda', self._path) # Load the ctypes library
+        except OSError:
+            # N.ctypeslib.load_library will raise an OSError("no file with expected extension") if the library
+            # isn't found. This isn't a terribly helpful message. As the setup.py file doesn't build the cuda
+            # librarires, this is an indication that required installation steps haven't been followed, raise
+            # a better error message
+            raise ValueError("Unable to find required libary (libtsnecuda). Please ensure that tsne-cude is installed properly.")
 
         # Hook the BH T-SNE function
         self._lib.pymodule_bh_tsne.restype = None
