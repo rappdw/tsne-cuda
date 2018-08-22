@@ -1,3 +1,12 @@
+# build for docker image that can be run on EC2 p3 instance (tesla v100) with nvidia-docker2 installed
+# tesla support requires adding:
+#                     -gencode=arch=compute_70,code=sm_70
+# on line 63 in CMakeLists.txt
+#
+# Once this image is built, it should be built and run:
+#                     docker build -t tsne-cuda-test:latest -f docker/test/Dockerfile .
+#                     docker run --init -it --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all tsne-cuda-test:latest
+#
 FROM nvidia/cuda:9.2-devel-ubuntu18.04 as builder
 
 ADD docker/test/install-mkl.sh /usr/local/bin/
