@@ -18,6 +18,8 @@ RUN apt-get update; \
 
 WORKDIR /workdir
 
+# add individual directories to avoid busting the cache if docker file changes, etc.
+# note, not adding .git which means you need to comment out 31-38 in CMakeLists.txt for docker build
 ADD cmake /workdir/cmake
 ADD docs /workdir/docs
 ADD src /workdir/src
@@ -25,6 +27,7 @@ ADD third_party /workdir/third_party
 ADD visualization /workdir/visualization
 ADD CMakeLists.txt /workdir
 
+# set -j8 for AWS p3.xLarge instance, use value appropriate for instance
 RUN mkdir build; \
     cd build; \
     cmake .. -DBUILD_PYTHON=TRUE  -DWITH_FAISS_GPU_STANDALONE=ON ;\
@@ -33,6 +36,7 @@ RUN mkdir build; \
 RUN cd build/python; \
     python3 setup.py bdist_wheel
 
+# Use rappdw/nvidia-python (python added to the nvidia/cuda image)
 FROM rappdw/nvidia-python:latest
 
 ADD docker/test/install-mkl.sh /usr/local/bin/
@@ -53,7 +57,3 @@ COPY --from=builder /workdir/build/lib/libfaiss.so /usr/local/nvidia/lib
 
 RUN . /.venv/bin/activate; \
     pip install /tmp/*.whl
-
-ADD docker/test/test.* /usr/local/bin/
-
-ENTRYPOINT ["/usr/local/bin/test.sh"]
