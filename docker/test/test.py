@@ -11,7 +11,8 @@ if __name__ == "__main__":
     else:
         instances = int(sys.argv[1])
     X = np.random.rand(instances, 150)
-    t = TSNE(n_components=2, verbose=1, n_iter=1000)
+#    X = np.array([[0, 0, 0], [0, 1, 1], [1, 0, 1], [1, 1, 1]])
+    t = TSNE(n_components=2, verbose=1)
     start = time.time()
 
     X2d = t.fit_transform(X)

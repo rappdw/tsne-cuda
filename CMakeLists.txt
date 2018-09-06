@@ -28,14 +28,14 @@ endif()
 #-------------------------------------------------------------------------------
 SET(BUILD_NUMBER 0)
 SET(VERSION_STRING "${cuda-tsne_VERSION_MAJOR}.${cuda-tsne_VERSION_MINOR}")
-find_package(Git)
-if(GIT_FOUND)
-    execute_process(
-            COMMAND ${GIT_EXECUTABLE} describe --match INITIAL_BUILD
-            OUTPUT_VARIABLE DESCRIBE_BUILD
-            OUTPUT_STRIP_TRAILING_WHITESPACE)
-    string(REGEX MATCH "[0-9]+" BUILD_NUMBER ${DESCRIBE_BUILD})
-endif()
+#find_package(Git)
+#if(GIT_FOUND)
+#    execute_process(
+#            COMMAND ${GIT_EXECUTABLE} describe --match INITIAL_BUILD
+#            OUTPUT_VARIABLE DESCRIBE_BUILD
+#            OUTPUT_STRIP_TRAILING_WHITESPACE)
+#    string(REGEX MATCH "[0-9]+" BUILD_NUMBER ${DESCRIBE_BUILD})
+#endif()
 ADD_DEFINITIONS(-DBUILD_NUMBER=${BUILD_NUMBER})
 ADD_DEFINITIONS(-DVERSION_STRING=${VERSION_STRING})
 #-------------------------------------------------------------------------------
@@ -60,6 +60,7 @@ set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};
                     #-gencode=arch=compute_35,code=sm_35
                     -gencode=arch=compute_50,code=sm_50
                     -gencode=arch=compute_61,code=sm_61
+                    -gencode=arch=compute_70,code=sm_70
                     -std=c++11
                     -g
                     -Xcompiler '-fPIC'
