@@ -29,3 +29,5 @@ ADD docker/build/build.sh /usr/local/bin
 WORKDIR /workdir
 
 ENTRYPOINT ["build.sh"]
+# CMD is how many cores to use for the compilation
+CMD ["1"]
